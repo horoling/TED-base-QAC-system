@@ -1,0 +1,1 @@
+graphdata/demoquery.txt Time: 21.79675793647766
