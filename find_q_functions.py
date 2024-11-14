@@ -69,6 +69,5 @@ def get_embeddings(qs, target):
     q = read_single_graph(target)
     for graph in qs:
         λ = get_valid_λ(graph, q)
-        print(λ)
         emb.append((graph,λ))
     return emb

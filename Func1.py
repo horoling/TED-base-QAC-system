@@ -7,25 +7,24 @@ class lambda_i:
     def __init__(self, value):
         self.value = value
 
-def generate_all_subgraphs(G):
-    if G is None:
+def generate_all_subgraphs(G, n):
+    if G is None or n <= 0:
         return []
     subgraphs = []
     nodes = list(G.nodes)
     
-    # 生成所有可能的节点组合
-    for r in range(1, len(nodes) + 1):
-        for node_combination in combinations(nodes, r):
-            subgraph = G.subgraph(node_combination).copy()
-            subgraphs.append(subgraph)
+    # 生成包含 n 个节点的所有可能的节点组合
+    for node_combination in combinations(nodes, n):
+        subgraph = G.subgraph(node_combination).copy()
+        subgraphs.append(subgraph)
     
     return subgraphs
 
 def node_matcher(n1, n2):
-    return n1['label'] == n2['label']
+    return str(n1['label']) == str(n2['label'])
 
 def edge_matcher(e1, e2):
-    return e1['label'] == e2['label']
+    return str(e1['label']) == str(e2['label'])
 
 def find_automorphisms(G1, G2):
     common_subgraphs = []
@@ -50,7 +49,7 @@ def find_common_subgraph(G1, G2):
     if G1 is None or G2 is None:
         return nx.Graph()
     common_subgraph = nx.Graph()
-    sub_G1 = generate_all_subgraphs(G1)
+    sub_G1 = generate_all_subgraphs(G1,G2.number_of_nodes())
     for subgraph in sub_G1:
         matcher = nx.algorithms.isomorphism.GraphMatcher(subgraph, G2, node_match=node_matcher, edge_match=edge_matcher)
         
@@ -69,7 +68,7 @@ def find_common_subgraph(G1, G2):
 def find_common_subgraphs(G1, G2):
     common_subgraphs = []
     unique_subgraphs = set()
-    sub_G1 = generate_all_subgraphs(G1)
+    sub_G1 = generate_all_subgraphs(G1,G2.number_of_nodes())
     
     for subgraph in sub_G1:
         matcher = nx.algorithms.isomorphism.GraphMatcher(subgraph, G2, node_match=node_matcher, edge_match=edge_matcher)
@@ -215,8 +214,8 @@ def check_duplicate_graphs(candidates):
         else:
             seen_hashes.add(graph_hash)
 
-def get_valid_λ(cs, f):
-    r = find_common_subgraphs(cs, f)
+def get_valid_λ(graph , q):
+    r = find_common_subgraphs(graph, q)
     node_arrays = []
 
     for i, subgraph_mapping in enumerate(r):
